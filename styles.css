@@ -1,0 +1,182 @@
+:root{
+  --bg-color:#12012e;
+  --primary-text:#ffffff;
+  --accent-color:#f7d100;
+  --secondary-color:#e3a3f7;
+}
+
+/* stay hidden even if inline styles try to show it */
+[hidden]{ display:none !important; }
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* MOBILE-SAFE HEIGHT + SAFE AREAS */
+html, body{height:100%}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:linear-gradient(135deg,#12012e,#2c003e);
+  color:var(--primary-text);
+  /* use dynamic viewport height for mobile chrome/safari */
+  min-height:100dvh;
+  /* fallback for older safari */
+  height:-webkit-fill-available;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+
+  /* avoid content under notches */
+  padding-left: max(env(safe-area-inset-left), 0px);
+  padding-right:max(env(safe-area-inset-right),0px);
+}
+
+/* BALLOONS */
+.balloons{
+  position:fixed; inset:0; overflow:hidden;
+  pointer-events:none; z-index:0;
+}
+.balloon{
+  position:absolute; bottom:-140px;
+  width:44px; height:66px;
+  border-radius:50% 50% 45% 55%/55% 50% 50% 45%;
+  background:var(--accent-color);
+  opacity:.75; filter:drop-shadow(0 6px 12px rgba(0,0,0,.35));
+  animation:floatUp linear infinite;
+}
+.balloon::after{
+  content:""; position:absolute; bottom:-18px; left:50%;
+  width:2px; height:20px; background:rgba(255,255,255,.6);
+  transform:translateX(-50%);
+}
+
+/* columns & speeds */
+.balloons .balloon:nth-child(1){left:6%;  animation-duration:12s; background:var(--secondary-color);}
+.balloons .balloon:nth-child(2){left:18%; animation-duration:14s;}
+.balloons .balloon:nth-child(3){left:30%; animation-duration:16s; background:#6ea8ff;}
+.balloons .balloon:nth-child(4){left:42%; animation-duration:13s; background:#ffd166;}
+.balloons .balloon:nth-child(5){left:54%; animation-duration:15s;}
+.balloons .balloon:nth-child(6){left:66%; animation-duration:17s; background:#ffffff;}
+.balloons .balloon:nth-child(7){left:72%; animation-duration:12.5s; background:#ff6ea8;}
+.balloons .balloon:nth-child(8){left:80%; animation-duration:14.5s;}
+.balloons .balloon:nth-child(9){left:88%; animation-duration:16.5s; background:#6ea8ff;}
+.balloons .balloon:nth-child(10){left:94%; animation-duration:18s; background:#ffd166;}
+
+@keyframes floatUp{
+  from{ transform:translateY(0) }
+  to  { transform:translateY(-120vh) }
+}
+
+/* GATE */
+#surprise-gate{
+  position:fixed; inset:0; background:rgba(0,0,0,.7);
+  z-index:2; display:flex; justify-content:center; align-items:center;
+  transition:opacity 1s ease-out;
+}
+#surprise-gate.hidden{ opacity:0; pointer-events:none }
+
+.gate-content{ padding:24px }
+.gate-content h1{
+  font-family:'Dancing Script',cursive;
+  /* scales from phone → desktop */
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  color:var(--secondary-color);
+}
+
+#reveal-button{
+  margin-top:1.25rem;
+  padding:1rem 2.5rem;
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  font-weight:700;
+  color:var(--bg-color);
+  background:var(--accent-color);
+  border:none; border-radius:50px; cursor:pointer;
+  transition:transform .3s ease, box-shadow .3s ease;
+  animation:pulse 2s infinite;
+  /* ensure iOS doesn’t zoom the page on tap */
+  -webkit-text-size-adjust:100%;
+}
+#reveal-button:hover{ transform:scale(1.08); box-shadow:0 0 50px var(--accent-color) }
+@keyframes pulse{ 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+
+/* MAIN CONTENT (shown after reveal) */
+#birthday-content{
+  position:relative; z-index:1;
+  width:100%; height:100%;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+}
+.content-wrapper{ padding: 2rem 1.25rem }
+
+/* reveal animations */
+.title-reveal,.name-reveal,.message-reveal,.personal-note-reveal{ opacity:0 }
+.title-reveal{
+  animation:fadeInUp 1s ease-out .4s forwards;
+  font-size: clamp(1.2rem, 2.8vw, 2rem);
+  letter-spacing: 5px; text-transform: uppercase;
+}
+.name-reveal{
+  animation:fadeInUp 1s ease-out .7s forwards;
+  font-family:'Dancing Script',cursive;
+  font-size: clamp(2.2rem, 8vw, 5.5rem);
+  color:var(--accent-color); margin:.5rem 0 1rem;
+  text-shadow:0 0 15px var(--accent-color);
+}
+.message-reveal{
+  animation:fadeInUp 1s ease-out 1s forwards;
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  margin-bottom: 1.25rem; color:var(--secondary-color);
+}
+.personal-note-reveal{
+  animation:fadeInUp 1s ease-out 1.3s forwards;
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: clamp(0.95rem, 2.3vw, 1.1rem);
+  line-height: 1.8;
+  padding: 0 0.25rem;
+}
+.personal-note-reveal p {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: center;
+}
+.signature{
+  margin-top: .75rem;
+  font-family:'Dancing Script',cursive;
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  color:var(--secondary-color);
+  text-align: center; /* keeps signature neat */
+}
+
+/* responsive photo */
+.photo{
+  width: min(60vw, 260px);
+  height: auto;          /* keep aspect ratio */
+  aspect-ratio: 1 / 1;   /* circle shape preserved */
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--accent-color);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  margin: 0 auto 1rem;
+}
+
+/* keyframes */
+@keyframes fadeInUp{
+  from{ opacity:0; transform:translateY(20px) }
+  to  { opacity:1; transform:translateY(0) }
+}
+
+/* SMALL PHONE TWEAKS */
+@media (max-width: 480px){
+  .content-wrapper{ padding: 1.5rem 1rem }
+  /* shrink balloons so they don't overlap text too much */
+  .balloon{ width:34px; height:52px; bottom:-120px }
+}
+
+/* RESPECT REDUCED MOTION */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important }
+}
+
+

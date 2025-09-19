@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HBD Anna!</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <!-- Balloons (hidden until reveal) -->
+  <div class="balloons" id="balloons" hidden aria-hidden="true">
+    <div class="balloon"></div><div class="balloon"></div><div class="balloon"></div>
+    <div class="balloon"></div><div class="balloon"></div><div class="balloon"></div>
+    <div class="balloon"></div><div class="balloon"></div><div class="balloon"></div>
+    <div class="balloon"></div>
+  </div>
+
+  <!-- GATE (only this is visible on load) -->
+  <div id="surprise-gate">
+    <div class="gate-content">
+      <h1>A Little Gift For You Anna</h1>
+      <button id="reveal-button">🎁</button>
+    </div>
+  </div>
+
+  <!-- MAIN BIRTHDAY PAGE (hidden until button click) -->
+  <main id="birthday-content" hidden aria-hidden="true">
+    <div class="content-wrapper">
+      <h1 class="title-reveal">Happy Birthday</h1>
+      <h2 class="name-reveal">𝚈 𝚄 𝚅 𝙰 𝙽 🩶 𝙰 𝙽 𝙽 𝙰 !</h2>
+
+
+      <!-- Your image -->
+      <img src="anna.jpeg" alt="Anna's photo" class="photo">
+
+      <div class="personal-note-reveal">
+        <p>Happy Birthday to my anna 🎉, my support system 🤗❤️, and my adviser! 
+I’ve always been on the giving side, but with you, anna, I received so much love 💖 and care.
+You stood by me during my toughest moments 💪 and gave me the courage to be strong.
+That’s something I’ll never forget ✨.
+I’m possessive about you because you mean so much to me 🫶, and no matter what, you’ll always be my anna forever 🔒.
+I pray you stay happy 😊, blessed and achieve everything you wish for 🎂💫🌟.</p>
+        <p class="signature">- With Love Asha ✨</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- BGM -->
+  <audio id="bgm" src="bgm1.mp3" loop preload="auto"></audio>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const revealButton = document.getElementById('reveal-button');
+      const surpriseGate = document.getElementById('surprise-gate');
+      const birthdayContent = document.getElementById('birthday-content');
+      const balloons = document.getElementById('balloons');
+      const bgm = document.getElementById('bgm');
+
+      // Reveal only after click
+      revealButton.addEventListener('click', async () => {
+        // fade the gate
+        surpriseGate.classList.add('hidden');
+
+        // start music (user-gesture -> allowed)
+        try { await bgm.play(); } catch (e) {}
+
+        // after fade, show the page
+        setTimeout(() => {
+          surpriseGate.style.display = 'none';
+
+          // show balloons & main content
+          balloons.hidden = false; balloons.removeAttribute('aria-hidden');
+          birthdayContent.hidden = false; birthdayContent.removeAttribute('aria-hidden');
+
+          // trigger confetti
+          confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+
+          // short rain
+          const duration = 5000, end = Date.now() + duration;
+          const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+          const rnd = (a,b)=>Math.random()*(b-a)+a;
+
+          const timer = setInterval(() => {
+            const left = end - Date.now();
+            if (left <= 0) return clearInterval(timer);
+            const count = Math.round(50 * (left / duration));
+            confetti({ ...defaults, particleCount: count, origin: { x: rnd(0.1,0.3), y: Math.random() - 0.2 } });
+            confetti({ ...defaults, particleCount: count, origin: { x: rnd(0.7,0.9), y: Math.random() - 0.2 } });
+          }, 250);
+        }, 1000); // must match CSS transition
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+
